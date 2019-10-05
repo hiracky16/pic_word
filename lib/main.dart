@@ -1,86 +1,91 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
-void main() => runApp(MyApp());
-
+void main() {
+  runApp(new MyApp());
+}
 class MyApp extends StatelessWidget {
-  final title = 'Flutter サンプル';
-  // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
+    return new MaterialApp(
+      title: 'Generated App',
+      theme: new ThemeData(
         primarySwatch: Colors.blue,
+        primaryColor: const Color(0xFF2196f3),
+        accentColor: const Color(0xFF2196f3),
+        canvasColor: const Color(0xFFfafafa),
       ),
-      home: MyHomePage(title: this.title),
+      home: new MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({this.title}): super();
-  final String title;
+  MyHomePage({Key key}) : super(key: key);
   @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class Data {
-  int _price;
-  String _name;
-  Data(this._name, this._price): super();
-
-  @override
-  String toString() {
-    return _name + ':' + _price.toString() + '円';
-  }
+  _MyHomePageState createState() => new _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  static final _data = [
-    Data('Apple', 200),
-    Data('Orange', 150),
-    Data('Peach', 300),
-  ];
+    String _message;
+    final controller = TextEditingController();
 
-  Data _item;
-
-  @override
-  void initState() {
-    super.initState();
-    _item = _data[0];
-  }
-
-  void _setData() {
-    setState(() {
-      _item = (_data..shuffle()).first;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Text(
-        _item.toString(),
-        style: TextStyle(fontSize: 31.0),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _setData,
-        tooltip: 'set message',
-        child: Icon(Icons.star),
-      ),
-    );
-  }
+    @override
+    void initState() {
+      super.initState();
+      _message = 'ok!';
+    }
+    @override
+    Widget build(BuildContext context) {
+      return new Scaffold(
+        appBar: new AppBar(
+          title: new Text('App Name'),
+          ),
+        body:
+          new Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              new Padding(
+                child:
+                  new Text(
+                  _message,
+                    style: new TextStyle(fontSize:32.0,
+                    color: const Color(0xFF000000),
+                    fontWeight: FontWeight.w400,
+                    fontFamily: "Roboto"),
+                  ),
+                padding: const EdgeInsets.all(20.0),
+              ),
+              new Padding(
+                child:
+                  new TextField(
+                    controller: controller,
+                    style: new TextStyle(fontSize:28.0,
+                    color: const Color(0xFF000000),
+                    fontWeight: FontWeight.w400,
+                    fontFamily: "Roboto"),
+                  ),
+                padding: const EdgeInsets.all(10.0),
+              ),
+              new FlatButton(key:null, onPressed:buttonPressed,
+                child:
+                  new Text(
+                  "Push me !!!",
+                    style: new TextStyle(fontSize:32.0,
+                    color: const Color(0xFF000000),
+                    fontWeight: FontWeight.w400,
+                    fontFamily: "Roboto"),
+                  )
+                )
+            ]
+          ),
+      );
+    }
+    void buttonPressed(){
+      setState(() {
+        _message = "you said: " + controller.text;
+      });
+    }
 }
