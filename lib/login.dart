@@ -71,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               new MaterialButton(
                   key: null,
-                  onPressed: buttonPressed,
+                  onPressed: signup,
                   color: Colors.blue,
                   elevation: 5.0,
                   minWidth: 200.0,
@@ -83,11 +83,50 @@ class _LoginPageState extends State<LoginPage> {
                         color: const Color(0xFF000000),
                         fontWeight: FontWeight.w400,
                         fontFamily: "Roboto"),
-                  ))
+                  ),
+              ),
+              new MaterialButton(
+                  key: null,
+                  onPressed: signin,
+                  color: Colors.blue,
+                  elevation: 5.0,
+                  minWidth: 200.0,
+                  height: 42.0,
+                  child: new Text(
+                    "Sign in",
+                    style: new TextStyle(
+                        fontSize: 32.0,
+                        color: const Color(0xFF000000),
+                        fontWeight: FontWeight.w400,
+                        fontFamily: "Roboto"),
+                  )
+              )
             ]));
   }
 
-  void buttonPressed() async {
+  void signin() async {
+    FirebaseUser user;
+    try {
+      user = await _firebaseAuth.signInWithEmailAndPassword(
+        email: _email, password: _password
+      );
+    } catch (e) {
+      print(e.toString());
+    }
+    if (user != null) {
+      setState(() {
+        _user = user;
+        _email = '';
+        _password = '';
+      });
+      emailController.text = '';
+      passwordController.text = '';
+    }
+    print('sign in');
+    Navigator.of(context).pushNamed("/register");
+  }
+
+  void signup() async {
     FirebaseUser user;
     try {
       user = await _firebaseAuth.createUserWithEmailAndPassword(
@@ -106,5 +145,6 @@ class _LoginPageState extends State<LoginPage> {
       passwordController.text = '';
     }
     print('sign up');
+    Navigator.of(context).pushNamed("/register");
   }
 }

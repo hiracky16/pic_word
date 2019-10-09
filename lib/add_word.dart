@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AddWord extends StatefulWidget {
   AddWord({Key key}) : super(key: key);
@@ -7,6 +9,17 @@ class AddWord extends StatefulWidget {
 }
 
 class _AddWordState extends State<AddWord> {
+  String _word;
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final Firestore _fireStore = Firestore.instance;
+  final wordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _word = '';
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -19,6 +32,8 @@ class _AddWordState extends State<AddWord> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             new TextField(
+              controller: wordController,
+              onChanged: (value) => _word = value.trim(),
               style: new TextStyle(
                   fontSize: 32.0,
                   color: const Color(0xFF000000),
@@ -41,5 +56,17 @@ class _AddWordState extends State<AddWord> {
     );
   }
 
-  void buttonPressed() {}
+  void buttonPressed() async {
+    FirebaseUser user = await _firebaseAuth.currentUser();
+    print(user.email);
+    var now = new DateTime.now();
+    await _fireStore
+        .collection('words')
+        .document()
+        .setData({'word': _word, 'user_id': user.uid, 'timestamp': now});
+    setState(() {
+      _word = '';
+    });
+    wordController.text = '';
+  }
 }
