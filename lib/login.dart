@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -9,6 +10,9 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   String _email;
   String _password;
+  FirebaseUser _user;
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -21,7 +25,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(_email);
     return new Scaffold(
         appBar: new AppBar(
           title: new Text('PicWord'),
@@ -32,91 +35,76 @@ class _LoginPageState extends State<LoginPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               new Padding(
-                child: new Text(
-                  "Login Page",
-                  style: new TextStyle(
-                      fontSize: 32.0,
-                      color: const Color(0xFF000000),
-                      fontWeight: FontWeight.w400,
-                      fontFamily: "Roboto"),
+                  padding: const EdgeInsets.fromLTRB(0.0, 100.0, 0.0, 0.0),
+                  child: new TextFormField(
+                    controller: emailController,
+                    maxLines: 1,
+                    keyboardType: TextInputType.emailAddress,
+                    autofocus: false,
+                    decoration: new InputDecoration(
+                        hintText: 'Email',
+                        icon: new Icon(
+                          Icons.mail,
+                          color: Colors.grey,
+                        )),
+                    validator: (value) =>
+                        value.isEmpty ? 'Email can\'t be empty' : null,
+                    onChanged: (value) => _email = value.trim(),
+                  )),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
+                child: new TextFormField(
+                  controller: passwordController,
+                  maxLines: 1,
+                  obscureText: true,
+                  autofocus: false,
+                  decoration: new InputDecoration(
+                      hintText: 'Password',
+                      icon: new Icon(
+                        Icons.lock,
+                        color: Colors.grey,
+                      )),
+                  validator: (value) =>
+                      value.isEmpty ? 'Password can\'t be empty' : null,
+                  onChanged: (value) => _password = value.trim(),
                 ),
-                padding: const EdgeInsets.all(20.0),
               ),
-              new Padding(
-                child: new Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      new Text(
-                        "email:",
-                        style: new TextStyle(
-                            fontSize: 24.0,
-                            color: const Color(0xFF000000),
-                            fontWeight: FontWeight.w200,
-                            fontFamily: "Roboto"),
-                      ),
-                      new TextField(
-                        onChanged: (text) {
-                          setState(() {
-                            this._email = text;
-                          });
-                        },
-                        controller: emailController,
-                        style: new TextStyle(
-                            fontSize: 24.0,
-                            color: const Color(0xFF000000),
-                            fontWeight: FontWeight.w200,
-                            fontFamily: "Roboto"),
-                      )
-                    ]),
-                padding: const EdgeInsets.all(10.0),
-              ),
-              new Padding(
-                child: new Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      new Text(
-                        "password:",
-                        style: new TextStyle(
-                            fontSize: 24.0,
-                            color: const Color(0xFF000000),
-                            fontWeight: FontWeight.w200,
-                            fontFamily: "Roboto"),
-                      ),
-                      new TextField(
-                        onChanged: (text) {
-                          this._password = text;
-                        },
-                        controller: passwordController,
-                        style: new TextStyle(
-                            fontSize: 24.0,
-                            color: const Color(0xFF000000),
-                            fontWeight: FontWeight.w200,
-                            fontFamily: "Roboto"),
-                      )
-                    ]),
-                padding: const EdgeInsets.all(10.0),
-              ),
-              new RaisedButton(
+              new MaterialButton(
                   key: null,
                   onPressed: buttonPressed,
-                  color: const Color(0xFFe0e0e0),
+                  color: Colors.blue,
+                  elevation: 5.0,
+                  minWidth: 200.0,
+                  height: 42.0,
                   child: new Text(
-                    "Login",
+                    "Sign up",
                     style: new TextStyle(
                         fontSize: 32.0,
                         color: const Color(0xFF000000),
-                        fontWeight: FontWeight.w200,
+                        fontWeight: FontWeight.w400,
                         fontFamily: "Roboto"),
                   ))
             ]));
   }
 
-  void buttonPressed() {
-    print(_email);
-    print(_password);
+  void buttonPressed() async {
+    FirebaseUser user;
+    try {
+      user = await _firebaseAuth.createUserWithEmailAndPassword(
+        email: _email, password: _password
+      );
+    } catch (e) {
+      print(e.toString());
+    }
+    if (user != null) {
+      setState(() {
+        _user = user;
+        _email = '';
+        _password = '';
+      });
+      emailController.text = '';
+      passwordController.text = '';
+    }
+    print('sign up');
   }
 }
