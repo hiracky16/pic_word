@@ -123,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
       passwordController.text = '';
     }
     print('sign in');
-    Navigator.of(context).pushNamed("/register");
+    Navigator.of(context).pushNamed("/list");
   }
 
   void signup() async {
@@ -145,6 +145,6 @@ class _LoginPageState extends State<LoginPage> {
       passwordController.text = '';
     }
     print('sign up');
-    Navigator.of(context).pushNamed("/register");
+    Navigator.of(context).pushNamed("/list");
   }
 }

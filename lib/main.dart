@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pic_word/login.dart';
 import 'package:pic_word/add_word.dart';
+import 'package:pic_word/camera.dart';
+import 'package:pic_word/word_list.dart';
 
 void main() {
   runApp(new MyApp());
@@ -21,6 +23,8 @@ class MyApp extends StatelessWidget {
       routes: <String, WidgetBuilder>{
       '/register': (_) => new AddWord(),
       '/login': (_) => new LoginPage(),
+      '/camera': (_) => new Capture(),
+      '/list': (_) => new WordListPage()
     },
     );
   }
