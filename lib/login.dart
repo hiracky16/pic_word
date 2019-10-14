@@ -27,7 +27,57 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return new Scaffold(
         appBar: new AppBar(
-          title: new Text('PicWord'),
+          title: new Text('Login'),
+        ),
+        drawer: Drawer(
+          child: ListView(
+            children: <Widget>[
+              DrawerHeader(
+                child: Text(
+                  'PicWord',
+                  style: TextStyle(
+                    fontSize: 24,
+                    color: Colors.white,
+                  ),
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                ),
+              ),
+              ListTile(
+                title: Text('Home'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/login');
+                },
+              ),
+              Divider(),
+              ListTile(
+                title: Text('単語リスト'),
+                onTap: () {
+                  Navigator.pushNamed(context, '/list');
+                },
+              ),
+              ListTile(
+                title: Text('カメラ'),
+                onTap: () {
+                  Navigator.pushNamed(context, '/camera');
+                },
+              ),
+              ListTile(
+                title: Text('単語登録'),
+                onTap: () {
+                  Navigator.pushNamed(context, '/register');
+                },
+              ),
+              ListTile(
+                title: Text('クイズ'),
+                onTap: () {
+                  Navigator.pushNamed(context, '/quiz');
+                },
+              ),
+            ],
+          ),
         ),
         body: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -35,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               new Padding(
-                  padding: const EdgeInsets.fromLTRB(0.0, 100.0, 0.0, 0.0),
+                  padding: const EdgeInsets.all(24.0),
                   child: new TextFormField(
                     controller: emailController,
                     maxLines: 1,
@@ -52,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
                     onChanged: (value) => _email = value.trim(),
                   )),
               Padding(
-                padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
+                padding: const EdgeInsets.all(24.0),
                 child: new TextFormField(
                   controller: passwordController,
                   maxLines: 1,
@@ -69,37 +119,49 @@ class _LoginPageState extends State<LoginPage> {
                   onChanged: (value) => _password = value.trim(),
                 ),
               ),
-              new MaterialButton(
+              Padding(
+                child: new MaterialButton(
                   key: null,
                   onPressed: signup,
-                  color: Colors.blue,
+                  color: Colors.blueGrey,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  ),
                   elevation: 5.0,
                   minWidth: 200.0,
-                  height: 42.0,
+                  height: 60.0,
                   child: new Text(
                     "Sign up",
                     style: new TextStyle(
-                        fontSize: 32.0,
-                        color: const Color(0xFF000000),
+                        fontSize: 22.0,
+                        color: Colors.white,
                         fontWeight: FontWeight.w400,
                         fontFamily: "Roboto"),
                   ),
+                ),
+                padding: const EdgeInsets.all(24.0),
               ),
-              new MaterialButton(
+              Padding(
+                child: new MaterialButton(
                   key: null,
                   onPressed: signin,
                   color: Colors.blue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  ),
                   elevation: 5.0,
                   minWidth: 200.0,
-                  height: 42.0,
+                  height: 60.0,
                   child: new Text(
                     "Sign in",
                     style: new TextStyle(
-                        fontSize: 32.0,
+                        fontSize: 22.0,
                         color: const Color(0xFF000000),
                         fontWeight: FontWeight.w400,
                         fontFamily: "Roboto"),
                   )
+                ),
+                padding: const EdgeInsets.all(24.0),
               )
             ]));
   }

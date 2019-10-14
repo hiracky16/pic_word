@@ -3,6 +3,7 @@ import 'package:pic_word/login.dart';
 import 'package:pic_word/add_word.dart';
 import 'package:pic_word/camera.dart';
 import 'package:pic_word/word_list.dart';
+import 'package:pic_word/quiz.dart';
 
 void main() {
   runApp(new MyApp());
@@ -21,11 +22,12 @@ class MyApp extends StatelessWidget {
       ),
       home: new LoginPage(),
       routes: <String, WidgetBuilder>{
-      '/register': (_) => new AddWord(),
-      '/login': (_) => new LoginPage(),
-      '/camera': (_) => new Capture(),
-      '/list': (_) => new WordListPage()
-    },
+        '/register': (_) => new AddWord(),
+        '/login': (_) => new LoginPage(),
+        '/camera': (_) => new Capture(),
+        '/list': (_) => new WordListPage(),
+        '/quiz': (_) => new QuizPage()
+      },
     );
   }
 }

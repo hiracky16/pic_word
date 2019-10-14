@@ -24,7 +24,7 @@ class _AddWordState extends State<AddWord> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text('Add Word'),
+        title: new Text('単語登録'),
       ),
       body: new Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -58,15 +58,20 @@ class _AddWordState extends State<AddWord> {
 
   void buttonPressed() async {
     FirebaseUser user = await _firebaseAuth.currentUser();
-    print(user.email);
     var now = new DateTime.now();
-    await _fireStore
+    print(user.uid);
+    print(_word);
+    try {
+      await _fireStore
         .collection('words')
         .document()
         .setData({'word': _word, 'user_id': user.uid, 'timestamp': now});
-    setState(() {
-      _word = '';
-    });
-    wordController.text = '';
+      setState(() {
+        _word = '';
+      });
+      wordController.text = '';
+    } catch (e) {
+      print(e.toString());
+    }
   }
 }
