@@ -63,6 +63,8 @@ class _AddWordState extends State<AddWord> {
     print(_word);
     try {
       await _fireStore
+        .collection('users')
+        .document(user.uid)
         .collection('words')
         .document()
         .setData({'word': _word, 'user_id': user.uid, 'timestamp': now});
