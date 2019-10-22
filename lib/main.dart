@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         '/register': (_) => new AddWord(),
         '/login': (_) => new LoginPage(),
-        '/camera': (_) => new Capture(),
+        '/camera': (_) => new Camera(),
         '/list': (_) => new WordListPage(),
         '/quiz': (_) => new QuizPage()
       },
