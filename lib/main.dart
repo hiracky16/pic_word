@@ -4,12 +4,28 @@ import 'package:pic_word/add_word.dart';
 import 'package:pic_word/camera.dart';
 import 'package:pic_word/word_list.dart';
 import 'package:pic_word/quiz.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() {
   runApp(new MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  MyAppState createState() => new MyAppState();
+}
+
+class MyAppState extends State<MyApp> {
+  bool isLogin;
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    isLogin = _firebaseAuth.currentUser() != null;
+    print(isLogin);
+  }
+
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
@@ -20,7 +36,7 @@ class MyApp extends StatelessWidget {
         accentColor: const Color(0xFF2196f3),
         canvasColor: const Color(0xFFfafafa),
       ),
-      home: new LoginPage(),
+      home: returnHomePage(),
       routes: <String, WidgetBuilder>{
         '/register': (_) => new AddWord(),
         '/login': (_) => new LoginPage(),
@@ -29,5 +45,9 @@ class MyApp extends StatelessWidget {
         '/quiz': (_) => new QuizPage()
       },
     );
+  }
+
+  Widget returnHomePage() {
+    return isLogin ? new WordListPage() : new LoginPage();
   }
 }
