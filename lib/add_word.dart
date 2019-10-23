@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:pic_word/widgets/drawer.dart';
 
 class AddWord extends StatefulWidget {
   AddWord({Key key}) : super(key: key);
@@ -26,24 +27,36 @@ class _AddWordState extends State<AddWord> {
       appBar: new AppBar(
         title: new Text('単語登録'),
       ),
+      drawer: buildDrawer(context),
       body: new Column(
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            new TextField(
-              controller: wordController,
-              onChanged: (value) => _word = value.trim(),
-              style: new TextStyle(
-                  fontSize: 32.0,
-                  color: const Color(0xFF000000),
-                  fontWeight: FontWeight.w400,
-                  fontFamily: "Roboto"),
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: new TextField(
+                controller: wordController,
+                onChanged: (value) => _word = value.trim(),
+                style: new TextStyle(
+                    fontSize: 32.0,
+                    color: const Color(0xFF000000),
+                    fontWeight: FontWeight.w400,
+                    fontFamily: "Roboto"),
+              )
             ),
-            new RaisedButton(
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: new MaterialButton(
                 key: null,
                 onPressed: buttonPressed,
-                color: const Color(0xFFe0e0e0),
+                color: Colors.blueGrey,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                ),
+                elevation: 5.0,
+                minWidth: 200.0,
+                height: 60.0,
                 child: new Text(
                   "登録",
                   style: new TextStyle(
@@ -51,7 +64,9 @@ class _AddWordState extends State<AddWord> {
                       color: const Color(0xFF000000),
                       fontWeight: FontWeight.w400,
                       fontFamily: "Roboto"),
-                ))
+                )
+              )
+            )
           ]),
     );
   }

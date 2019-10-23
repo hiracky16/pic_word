@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:pic_word/widgets/drawer.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -29,56 +30,7 @@ class _LoginPageState extends State<LoginPage> {
         appBar: new AppBar(
           title: new Text('Login'),
         ),
-        drawer: Drawer(
-          child: ListView(
-            children: <Widget>[
-              DrawerHeader(
-                child: Text(
-                  'PicWord',
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: Colors.white,
-                  ),
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                ),
-              ),
-              ListTile(
-                title: Text('Home'),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, '/login');
-                },
-              ),
-              Divider(),
-              ListTile(
-                title: Text('単語リスト'),
-                onTap: () {
-                  Navigator.pushNamed(context, '/list');
-                },
-              ),
-              ListTile(
-                title: Text('カメラ'),
-                onTap: () {
-                  Navigator.pushNamed(context, '/camera');
-                },
-              ),
-              ListTile(
-                title: Text('単語登録'),
-                onTap: () {
-                  Navigator.pushNamed(context, '/register');
-                },
-              ),
-              ListTile(
-                title: Text('クイズ'),
-                onTap: () {
-                  Navigator.pushNamed(context, '/quiz');
-                },
-              ),
-            ],
-          ),
-        ),
+        drawer: buildDrawer(context),
         body: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
@@ -163,7 +115,9 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 padding: const EdgeInsets.all(24.0),
               )
-            ]));
+            ]
+          )
+        );
   }
 
   void signin() async {

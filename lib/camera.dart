@@ -1,6 +1,7 @@
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:pic_word/detail_widget.dart';
+import 'package:pic_word/widgets/drawer.dart';
 
 class Camera extends StatelessWidget {
   @override
@@ -9,6 +10,7 @@ class Camera extends StatelessWidget {
       appBar: AppBar(
         title: Text("文字読み取り"),
       ),
+      drawer: buildDrawer(context),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[

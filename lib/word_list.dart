@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:pic_word/widgets/drawer.dart';
 
 class WordListPage extends StatefulWidget {
   WordListPage({Key key}) : super(key: key);
@@ -24,6 +25,7 @@ class _WordListState extends State<WordListPage> {
         appBar: new AppBar(
           title: new Text('単語リスト'),
         ),
+        drawer: buildDrawer(context),
         body: Container(
             child: StreamBuilder<QuerySnapshot>(
                 stream: _fireStore
