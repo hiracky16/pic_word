@@ -28,15 +28,20 @@ class Camera extends StatelessWidget {
         children: <Widget>[
           Expanded(
             child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.0),
-                child: RaisedButton(
+                padding: const EdgeInsets.all(24.0),
+                child: new MaterialButton(
+                  key: null,
                   color: Colors.blue,
-                  textColor: Colors.white,
-                  splashColor: Colors.blueGrey,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  ),
+                  elevation: 5.0,
+                  minWidth: 200.0,
+                  height: 60.0,
                   onPressed: () {
                     _onPickImageSelected(context);
                   },
-                  child: Text("start camera"),
+                  child: Text("カメラを開く\n注:英語限定"),
                 )),
           ),
         ],
@@ -57,6 +62,7 @@ class Camera extends StatelessWidget {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => DetailWidget(file)));
     } catch(e) {
+      Navigator.of(context).pushNamed("/list");
     }
   }
 

@@ -36,10 +36,11 @@ class _AddWordState extends State<AddWord> {
             Padding(
               padding: const EdgeInsets.all(24.0),
               child: new TextField(
+                decoration: InputDecoration(labelText: '登録単語', border: OutlineInputBorder()),
                 controller: wordController,
                 onChanged: (value) => _word = value.trim(),
                 style: new TextStyle(
-                    fontSize: 32.0,
+                    fontSize: 24.0,
                     color: const Color(0xFF000000),
                     fontWeight: FontWeight.w400,
                     fontFamily: "Roboto"),
@@ -50,7 +51,7 @@ class _AddWordState extends State<AddWord> {
               child: new MaterialButton(
                 key: null,
                 onPressed: buttonPressed,
-                color: Colors.blueGrey,
+                color: Colors.blue,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(5.0)),
                 ),
@@ -60,7 +61,7 @@ class _AddWordState extends State<AddWord> {
                 child: new Text(
                   "登録",
                   style: new TextStyle(
-                      fontSize: 32.0,
+                      fontSize: 22.0,
                       color: const Color(0xFF000000),
                       fontWeight: FontWeight.w400,
                       fontFamily: "Roboto"),
