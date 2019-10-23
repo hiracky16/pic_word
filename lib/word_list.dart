@@ -46,7 +46,7 @@ class _WordListState extends State<WordListPage> {
                             .map((DocumentSnapshot document) {
                           var data = document.data;
                           if (!data.containsKey('translated')) {
-                            data['translated'] = {'ja': '', 'en': ''};
+                            data['translated'] = {'ja': '', 'en': '', 'zh': ''};
                           }
                           return new Card(
                               color: Colors.white,
@@ -59,7 +59,10 @@ class _WordListState extends State<WordListPage> {
                                             data['translated']['ja'])),
                                     new ListTile(
                                         title: Text(
-                                            '英語: ' + data['translated']['en']))
+                                            '英語: ' + data['translated']['en'])),
+                                    new ListTile(
+                                        title: Text(
+                                            '中国語: ' + data['translated']['zh']))
                                   ]));
                         }).toList(),
                       );
