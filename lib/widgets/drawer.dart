@@ -17,14 +17,6 @@ Widget buildDrawer(BuildContext context) {
           ),
         ),
         ListTile(
-          title: Text('Home'),
-          onTap: () {
-            Navigator.pop(context);
-            Navigator.pushNamed(context, '/login');
-          },
-        ),
-        Divider(),
-        ListTile(
           title: Text('単語リスト'),
           onTap: () {
             Navigator.pushNamed(context, '/list');
