@@ -14,14 +14,14 @@ class _QuizPageState extends State<QuizPage> {
   int _successCount;
   String _userId;
   List<String> candidates = <String>[];
-  String ans;
+  String locale;
 
   @override
   void initState() {
-    _count = 0;
+    _count = 1;
     _successCount = 0;
     super.initState();
-    ans = '';
+    locale = 'zh';
     initUserId();
   }
 
@@ -47,33 +47,47 @@ class _QuizPageState extends State<QuizPage> {
                 default:
                   var random = new Random();
                   snapshot.data.documents.shuffle(random);
-                  var word1 = snapshot.data.documents[0].data;
-                  var word2 = snapshot.data.documents[1].data;
-                  var word3 = snapshot.data.documents[2].data;
-                  var word4 = snapshot.data.documents[4].data;
-                  String ja1 = word1.containsKey('translated')
-                      ? word1['translated']['ja']
+                  var words = snapshot.data.documents.sublist(0, 3);
+                  int ansIndex = random.nextInt(3);
+                  String ja1 = words[0].data.containsKey('translated')
+                      ? words[0].data['translated']['ja']
                       : '入力されていません';
-                  String ja2 = word2.containsKey('translated')
-                      ? word2['translated']['ja']
+                  String ja2 = words[1].data.containsKey('translated')
+                      ? words[1].data['translated']['ja']
                       : '入力されていません';
-                  String ja3 = word3.containsKey('translated')
-                      ? word3['translated']['ja']
+                  String ja3 = words[2].data.containsKey('translated')
+                      ? words[2].data['translated']['ja']
                       : '入力されていません';
+                  print(words[ansIndex].data['translated'][locale]);
                   return new Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
-                        new Text(_count.toString() + '回目',
-                            style: new TextStyle(
-                                fontSize: 24.0,
-                                color: const Color(0xFF000000),
-                                fontWeight: FontWeight.w700,
-                                fontFamily: "Roboto")),
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              Text('言語: '),
+                              selectBox()
+                            ]
+                          )
+                        ),
+                        new Text(
+                          _count.toString() + '問目',
+                          style: new TextStyle(
+                              fontSize: 24.0,
+                              color: const Color(0xFF000000),
+                              fontWeight: FontWeight.w700,
+                              fontFamily: "Roboto"),
+                          textAlign: TextAlign.center,
+                        ),
                         new Padding(
                           child: new Text(
-                            word1['word'],
+                            words[ansIndex].data['translated'][locale] != null
+                                ? words[ansIndex].data['translated'][locale]
+                                : 'Loading...',
                             textAlign: TextAlign.center,
                             style: new TextStyle(
                                 fontSize: 48.0,
@@ -83,15 +97,15 @@ class _QuizPageState extends State<QuizPage> {
                           ),
                           padding: const EdgeInsets.all(35.0),
                         ),
-                        _answerButton(ja1, 1),
-                        _answerButton(ja2, 2),
-                        _answerButton(ja3, 3),
+                        _answerButton(ja1, 0, ansIndex),
+                        _answerButton(ja2, 1, ansIndex),
+                        _answerButton(ja3, 2, ansIndex),
                       ]);
               }
             }));
   }
 
-  Widget _answerButton(String text, int index) {
+  Widget _answerButton(String text, int index, int ansIndex) {
     return new Padding(
       child: new MaterialButton(
           elevation: 5.0,
@@ -103,10 +117,10 @@ class _QuizPageState extends State<QuizPage> {
             borderRadius: BorderRadius.all(Radius.circular(5.0)),
           ),
           onPressed: () {
-            buttonPressed(index);
+            buttonPressed(index, ansIndex);
           },
           child: new Text(
-            index.toString() + '. ' + text,
+            (index + 1).toString() + '. ' + text,
             style: new TextStyle(
                 fontSize: 24.0,
                 color: const Color(0xFF000000),
@@ -146,11 +160,11 @@ class _QuizPageState extends State<QuizPage> {
     );
   }
 
-  void buttonPressed(int index) {
+  void buttonPressed(int index, int ansIndex) {
     setState(() {
       _count += 1;
     });
-    if (index == 1) {
+    if (index == ansIndex) {
       setState(() {
         _successCount += 1;
       });
@@ -161,9 +175,30 @@ class _QuizPageState extends State<QuizPage> {
       // Navigator.of(context).pushNamed("/list");
     }
   }
-}
 
-enum _DialogActionType {
-  cancel,
-  ok,
+  Widget selectBox() {
+    var localeMap = {'ja': '日本語', 'zh': '中国語', 'en': '英語'};
+    return DropdownButton<String>(
+        value: locale,
+        icon: Icon(Icons.arrow_downward),
+        iconSize: 24,
+        elevation: 16,
+        style: TextStyle(color: Colors.black),
+        underline: Container(
+          height: 2,
+          color: Colors.blue,
+        ),
+        onChanged: (String newValue) {
+          setState(() {
+            locale = newValue;
+          });
+        },
+        items: <String>['zh', 'ja', 'en']
+            .map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(localeMap[value]),
+          );
+        }).toList());
+  }
 }
