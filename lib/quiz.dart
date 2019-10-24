@@ -45,6 +45,9 @@ class _QuizPageState extends State<QuizPage> {
                 case ConnectionState.waiting:
                   return new Text('Loading...');
                 default:
+                  if (snapshot.data.documents.length < 10) {
+                    return new Text('登録単語が少なすぎるためクイズは使用できません。\n10 単語以上の登録が必要になります');
+                  }
                   var random = new Random();
                   snapshot.data.documents.shuffle(random);
                   var words = snapshot.data.documents.sublist(0, 3);
