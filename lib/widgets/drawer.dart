@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 Widget buildDrawer(BuildContext context) {
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   return Drawer(
     child: ListView(
       children: <Widget>[
@@ -23,7 +25,7 @@ Widget buildDrawer(BuildContext context) {
           },
         ),
         ListTile(
-          title: Text('カメラ'),
+          title: Text('カメラで登録'),
           onTap: () {
             Navigator.pushNamed(context, '/camera');
           },
@@ -38,6 +40,13 @@ Widget buildDrawer(BuildContext context) {
           title: Text('クイズ'),
           onTap: () {
             Navigator.pushNamed(context, '/quiz');
+          },
+        ),
+        ListTile(
+          title: Text('ログアウト'),
+          onTap: () {
+            _firebaseAuth.signOut();
+            Navigator.pushNamed(context, '/login');
           },
         ),
       ],

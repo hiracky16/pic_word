@@ -50,7 +50,7 @@ class _DetailWidgetState extends State<DetailWidget> {
   Widget build(BuildContext context) {
     return new Scaffold(
         appBar: AppBar(
-          title: Text("文字読み取り"),
+          title: Text("カメラで単語登録"),
         ),
         drawer: buildDrawer(context),
         body: Column(
