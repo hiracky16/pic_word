@@ -33,8 +33,9 @@ class _DetailWidgetState extends State<DetailWidget> {
   _analyzeLabels() async {
     try {
       var currentTextLabels = await _detector.detectFromPath(widget._file.path);
+      List<String> stringTexts = split2Words(currentTextLabels);
       List<ExtendVisionText> tmpList = <ExtendVisionText>[];
-      currentTextLabels.forEach((VisionText text) {
+      stringTexts.forEach((String text) {
         var e = ExtendVisionText(text);
         tmpList.add(e);
       });
@@ -106,7 +107,7 @@ class _DetailWidgetState extends State<DetailWidget> {
   }
 
   Widget _buildTextRow(ExtendVisionText text, int index) {
-    var word = text._visionText != null ? text._visionText.text : '';
+    var word = text._visionText != null ? text._visionText : '';
     return CheckboxListTile(
       activeColor: Colors.blue,
       controlAffinity: ListTileControlAffinity.leading,
@@ -132,7 +133,7 @@ class _DetailWidgetState extends State<DetailWidget> {
   void _registWords() {
     _currentTextLabels.forEach((ExtendVisionText text) {
       if(text._check) {
-        registStore(text._visionText.text);
+        registStore(text._visionText);
       }
     });
     Navigator.of(context).pushNamed("/list");
@@ -155,11 +156,26 @@ class _DetailWidgetState extends State<DetailWidget> {
   }
 }
 
+List<String> split2Words(List<VisionText> visionTexts) {
+  // 空白以外の文字を filter して visionText からテキストだけ取り出す
+  List<String> texts = <String>[];
+  visionTexts.forEach((VisionText vt) {
+    if(vt != null && vt.text.isNotEmpty) {
+      texts.add(vt.text);
+    }
+  });
+  // 空白文字でつなげる
+  String joinedText = texts.join(" ");
+  String nonlText = joinedText.replaceAll("\n", " ");
+
+  return nonlText.split(" ");
+}
+
 class ExtendVisionText {
-  VisionText _visionText;
+  String _visionText;
   bool _check;
 
-  ExtendVisionText(VisionText v) {
+  ExtendVisionText(String v) {
     _visionText = v;
     _check = false;
   }

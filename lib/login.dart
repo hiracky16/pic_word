@@ -28,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return new Scaffold(
         appBar: new AppBar(
-          title: new Text('Login'),
+          title: new Text('会員登録 / ログイン'),
         ),
         drawer: buildDrawer(context),
         body: Column(
