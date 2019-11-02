@@ -11,6 +11,7 @@ class AddWord extends StatefulWidget {
 
 class _AddWordState extends State<AddWord> {
   String _word;
+  String _userId;
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final Firestore _fireStore = Firestore.instance;
   final wordController = TextEditingController();
@@ -19,6 +20,7 @@ class _AddWordState extends State<AddWord> {
   void initState() {
     super.initState();
     _word = '';
+    initUserId();
   }
 
   @override
@@ -72,18 +74,26 @@ class _AddWordState extends State<AddWord> {
     );
   }
 
-  void buttonPressed() async {
+  void initUserId() async {
+    final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
     FirebaseUser user = await _firebaseAuth.currentUser();
+    if (user == null) {
+      Navigator.of(context).pushNamed("/login");
+    }
+    setState(() {
+      _userId = user.uid;
+    });
+  }
+
+  void buttonPressed() async {
     var now = new DateTime.now();
-    print(user.uid);
-    print(_word);
     try {
       await _fireStore
         .collection('users')
-        .document(user.uid)
+        .document(_userId)
         .collection('words')
         .document()
-        .setData({'word': _word, 'user_id': user.uid, 'timestamp': now});
+        .setData({'word': _word, 'user_id': _userId, 'timestamp': now});
       setState(() {
         _word = '';
       });

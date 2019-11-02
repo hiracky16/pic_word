@@ -84,9 +84,11 @@ class _WordListState extends State<WordListPage> {
   void initUserId() async {
     final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
     FirebaseUser user = await _firebaseAuth.currentUser();
-    String uid = user.uid;
+    if (user == null) {
+      Navigator.of(context).pushNamed("/login");
+    }
     setState(() {
-      _userId = uid;
+      _userId = user.uid;
     });
   }
 

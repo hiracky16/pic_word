@@ -137,6 +137,9 @@ class _QuizPageState extends State<QuizPage> {
   void initUserId() async {
     final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
     FirebaseUser user = await _firebaseAuth.currentUser();
+    if (user == null) {
+      Navigator.of(context).pushNamed("/login");
+    }
     setState(() {
       _userId = user.uid;
     });
