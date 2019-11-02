@@ -44,6 +44,7 @@ class _WordListState extends State<WordListPage> {
                       return new ListView(
                         children: snapshot.data.documents
                             .map((DocumentSnapshot document) {
+                          var id = document.documentID;
                           var data = document.data;
                           if (!data.containsKey('translated')) {
                             data['translated'] = {'ja': '', 'en': '', 'zh': ''};
@@ -51,19 +52,29 @@ class _WordListState extends State<WordListPage> {
                           return new Card(
                               color: Colors.white,
                               elevation: 0.0,
-                              child: ExpansionTile(
-                                  title: Text(data['word']),
-                                  children: <Widget>[
-                                    new ListTile(
-                                        title: Text('日本語: ' +
-                                            data['translated']['ja'])),
-                                    new ListTile(
-                                        title: Text(
-                                            '英語: ' + data['translated']['en'])),
-                                    new ListTile(
-                                        title: Text(
-                                            '中国語: ' + data['translated']['zh']))
-                                  ]));
+                              child: Dismissible(
+                                  key: Key(id),
+                                  background: Container(
+                                      color: Colors.red), // start to endの背景
+                                  secondaryBackground: Container(
+                                      color: Colors.red), // end to startの背景
+                                  onDismissed: (direction) {
+                                    showDialog(context);
+                                    deleteWordFromStore(id);
+                                  },
+                                  child: ExpansionTile(
+                                      title: Text(data['word']),
+                                      children: <Widget>[
+                                        new ListTile(
+                                            title: Text('日本語: ' +
+                                                data['translated']['ja'])),
+                                        new ListTile(
+                                            title: Text('英語: ' +
+                                                data['translated']['en'])),
+                                        new ListTile(
+                                            title: Text('中国語: ' +
+                                                data['translated']['zh'])),
+                                      ])));
                         }).toList(),
                       );
                   }
@@ -77,5 +88,18 @@ class _WordListState extends State<WordListPage> {
     setState(() {
       _userId = uid;
     });
+  }
+
+  void showDialog(BuildContext context) {
+    Scaffold.of(context).showSnackBar(SnackBar(content: Text("削除しました")));
+  }
+
+  void deleteWordFromStore(String id) {
+    _fireStore
+        .collection('users')
+        .document(_userId)
+        .collection('words')
+        .document(id)
+        .delete();
   }
 }
