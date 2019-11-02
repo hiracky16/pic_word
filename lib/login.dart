@@ -27,6 +27,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+        resizeToAvoidBottomPadding: false,
         appBar: new AppBar(
           title: new Text('会員登録 / ログイン'),
         ),
@@ -74,7 +75,9 @@ class _LoginPageState extends State<LoginPage> {
               Padding(
                 child: new MaterialButton(
                   key: null,
-                  onPressed: signup,
+                  onPressed: () {
+                    signup(context);
+                  },
                   color: Colors.blueGrey,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(5.0)),
@@ -96,7 +99,9 @@ class _LoginPageState extends State<LoginPage> {
               Padding(
                 child: new MaterialButton(
                   key: null,
-                  onPressed: signin,
+                  onPressed: () {
+                    signin(context);
+                  },
                   color: Colors.blue,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(5.0)),
@@ -120,14 +125,15 @@ class _LoginPageState extends State<LoginPage> {
         );
   }
 
-  void signin() async {
+  void signin(BuildContext context) async {
     FirebaseUser user;
     try {
       user = await _firebaseAuth.signInWithEmailAndPassword(
         email: _email, password: _password
       );
     } catch (e) {
-      print(e.toString());
+      showBasicDialog(context, "ユーザー登録に失敗しました。");
+      return;
     }
     if (user != null) {
       setState(() {
@@ -142,14 +148,15 @@ class _LoginPageState extends State<LoginPage> {
     Navigator.of(context).pushNamed("/list");
   }
 
-  void signup() async {
+  void signup(BuildContext context) async {
     FirebaseUser user;
     try {
       user = await _firebaseAuth.createUserWithEmailAndPassword(
         email: _email, password: _password
       );
     } catch (e) {
-      print(e.toString());
+      showBasicDialog(context, "ログインに失敗しました。");
+      return;
     }
     if (user != null) {
       setState(() {
@@ -162,5 +169,23 @@ class _LoginPageState extends State<LoginPage> {
     }
     print('sign up');
     Navigator.of(context).pushNamed("/list");
+  }
+
+  void showBasicDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => new AlertDialog(
+        title: new Text(message),
+        content: new Text("もう一度お試しください。"),
+        // ボタンの配置
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text('戻る'),
+              onPressed: () {
+                Navigator.pop(context);
+              })
+        ],
+      ),
+    );
   }
 }
