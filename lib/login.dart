@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pic_word/widgets/drawer.dart';
+import 'package:provider/provider.dart';
+import 'package:pic_word/models/login.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -9,166 +11,102 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  String _email;
-  String _password;
-  FirebaseUser _user;
+  final _formKey = GlobalKey<FormState>();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-
-  @override
-  void initState() {
-    this._email = '';
-    this._password = '';
-    super.initState();
-  }
+  final TextEditingController _emailController = new TextEditingController();
+  final TextEditingController _passwordController = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    print('build');
+    return Scaffold(
         resizeToAvoidBottomPadding: false,
         appBar: new AppBar(
           title: new Text('会員登録 / ログイン'),
         ),
         drawer: buildDrawer(context),
-        body: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              new Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: new TextFormField(
-                    controller: emailController,
-                    maxLines: 1,
-                    keyboardType: TextInputType.emailAddress,
-                    autofocus: false,
-                    decoration: new InputDecoration(
-                        hintText: 'Email',
-                        icon: new Icon(
-                          Icons.mail,
-                          color: Colors.grey,
-                        )),
-                    validator: (value) =>
-                        value.isEmpty ? 'Email can\'t be empty' : null,
-                    onChanged: (value) => _email = value.trim(),
-                  )),
-              Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: new TextFormField(
-                  controller: passwordController,
-                  maxLines: 1,
-                  obscureText: true,
-                  autofocus: false,
-                  decoration: new InputDecoration(
-                      hintText: 'Password',
-                      icon: new Icon(
-                        Icons.lock,
-                        color: Colors.grey,
-                      )),
-                  validator: (value) =>
-                      value.isEmpty ? 'Password can\'t be empty' : null,
-                  onChanged: (value) => _password = value.trim(),
-                ),
-              ),
-              Padding(
-                child: new MaterialButton(
-                  key: null,
-                  onPressed: () {
-                    signup(context);
-                  },
-                  color: Colors.blueGrey,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                  ),
-                  elevation: 5.0,
-                  minWidth: 200.0,
-                  height: 60.0,
-                  child: new Text(
-                    "Sign up",
-                    style: new TextStyle(
-                        fontSize: 22.0,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w400,
-                        fontFamily: "Roboto"),
-                  ),
-                ),
-                padding: const EdgeInsets.all(24.0),
-              ),
-              Padding(
-                child: new MaterialButton(
-                  key: null,
-                  onPressed: () {
-                    signin(context);
-                  },
-                  color: Colors.blue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                  ),
-                  elevation: 5.0,
-                  minWidth: 200.0,
-                  height: 60.0,
-                  child: new Text(
-                    "Sign in",
-                    style: new TextStyle(
-                        fontSize: 22.0,
-                        color: const Color(0xFF000000),
-                        fontWeight: FontWeight.w400,
-                        fontFamily: "Roboto"),
-                  )
-                ),
-                padding: const EdgeInsets.all(24.0),
-              )
-            ]
-          )
-        );
+        body: Consumer<Login>(builder: (context, login, _) {
+          return Form(
+              key: _formKey,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    new Padding(
+                        padding: const EdgeInsets.all(24.0),
+                        child: _InputText(
+                            _emailController,
+                            TextInputType.emailAddress,
+                            false,
+                            'Email',
+                            Icons.mail,
+                            validateEmail,
+                            login.setEmail)),
+                    Padding(
+                        padding: const EdgeInsets.all(24.0),
+                        child: _InputText(
+                            _passwordController,
+                            null,
+                            true,
+                            'Password',
+                            Icons.lock,
+                            validatePass,
+                            login.setPassword)),
+                    Padding(
+                      child: _Button(signup, Colors.lightBlue, "登録", login),
+                      padding: const EdgeInsets.all(24.0),
+                    ),
+                    Padding(
+                      child: _Button(signin, Colors.blue, "ログイン", login),
+                      padding: const EdgeInsets.all(24.0),
+                    )
+                  ]));
+        }));
   }
 
-  void signin(BuildContext context) async {
+  String validateEmail(String email) {
+    return email.isEmpty ? 'メールアドレスを入力してください。' : null;
+  }
+
+  String validatePass(String password) {
+    String message = '';
+    if (password.isEmpty) {
+      message += 'パスワードを入力してくだい。';
+    }
+    if (password.length < 6) {
+      message += 'パスワードは6文字以上です。';
+    } else {
+      return null;
+    }
+    return message;
+  }
+
+  void signin(BuildContext context, String email, String password) async {
     FirebaseUser user;
+    // form のバリデーションを実行
+    _formKey.currentState.validate();
     try {
       user = await _firebaseAuth.signInWithEmailAndPassword(
-        email: _email, password: _password
-      );
+          email: email, password: password);
     } catch (e) {
-      showBasicDialog(context, "ユーザー登録に失敗しました。");
       return;
-    }
-    if (user != null) {
-      setState(() {
-        _user = user;
-        _email = '';
-        _password = '';
-      });
-      emailController.text = '';
-      passwordController.text = '';
     }
     print('sign in');
-    Navigator.of(context).pushNamed("/list");
+    Navigator.pushNamed(context, "/list");
   }
 
-  void signup(BuildContext context) async {
+  void signup(BuildContext context, String email, String password) async {
     FirebaseUser user;
+    _formKey.currentState.validate();
     try {
       user = await _firebaseAuth.createUserWithEmailAndPassword(
-        email: _email, password: _password
-      );
+          email: email, password: password);
     } catch (e) {
-      showBasicDialog(context, "ログインに失敗しました。");
       return;
     }
-    if (user != null) {
-      setState(() {
-        _user = user;
-        _email = '';
-        _password = '';
-      });
-      emailController.text = '';
-      passwordController.text = '';
-    }
     print('sign up');
-    Navigator.of(context).pushNamed("/list");
+    Navigator.pushNamed(context, "/list");
   }
 
   void showBasicDialog(BuildContext context, String message) {
@@ -187,5 +125,75 @@ class _LoginPageState extends State<LoginPage> {
         ],
       ),
     );
+  }
+}
+
+class _InputText extends StatelessWidget {
+  TextInputType type;
+  bool isObscureText;
+  String hintText;
+  IconData icon;
+  Function validator;
+  Function change;
+  TextEditingController _textEditingController;
+  _InputText(this._textEditingController, this.type, this.isObscureText,
+      this.hintText, this.icon, this.validator, this.change);
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: _textEditingController,
+      maxLines: 1,
+      obscureText: isObscureText,
+      keyboardType: type,
+      autofocus: false,
+      decoration: new InputDecoration(
+          hintText: hintText,
+          icon: new Icon(
+            icon,
+            color: Colors.grey,
+          )),
+      validator: (value) {
+        String message = validator(value);
+        return message;
+      },
+      onChanged: (value) {
+        change(value);
+      },
+    );
+  }
+}
+
+class _Button extends StatelessWidget {
+  final Function onPress;
+  final MaterialColor color;
+  final String btnText;
+  final Login login;
+
+  @override
+  _Button(this.onPress, this.color, this.btnText, this.login);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialButton(
+        key: null,
+        onPressed: () {
+          onPress(context, login.email, login.password);
+        },
+        color: color,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(5.0)),
+        ),
+        elevation: 5.0,
+        minWidth: 200.0,
+        height: 60.0,
+        child: new Text(
+          btnText,
+          style: new TextStyle(
+              fontSize: 22.0,
+              color: const Color(0xFF000000),
+              fontWeight: FontWeight.w400,
+              fontFamily: "Roboto"),
+        ));
   }
 }

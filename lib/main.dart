@@ -5,6 +5,8 @@ import 'package:pic_word/camera.dart';
 import 'package:pic_word/word_list.dart';
 import 'package:pic_word/quiz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:pic_word/models/login.dart';
 
 void main() {
   runApp(new MyApp());
@@ -28,23 +30,30 @@ class MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Generated App',
-      theme: new ThemeData(
-        primarySwatch: Colors.blue,
-        primaryColor: const Color(0xFF2196f3),
-        accentColor: const Color(0xFF2196f3),
-        canvasColor: const Color(0xFFfafafa),
-      ),
-      home: returnHomePage(),
-      routes: <String, WidgetBuilder>{
-        '/register': (_) => new AddWord(),
-        '/login': (_) => new LoginPage(),
-        '/camera': (_) => new Camera(),
-        '/list': (_) => new WordListPage(),
-        '/quiz': (_) => new QuizPage()
-      },
+    return MultiProvider(
+          providers: [
+            ChangeNotifierProvider<Login>(
+              builder: (_) => Login(),
+            ),
+          ],
+          child: new MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Generated App',
+            theme: new ThemeData(
+              primarySwatch: Colors.blue,
+              primaryColor: const Color(0xFF2196f3),
+              accentColor: const Color(0xFF2196f3),
+              canvasColor: const Color(0xFFfafafa),
+            ),
+            home: LoginPage(),
+            routes: <String, WidgetBuilder>{
+              '/register': (_) => new AddWord(),
+              '/login': (_) => new LoginPage(),
+              '/camera': (_) => new Camera(),
+              '/list': (_) => new WordListPage(),
+              '/quiz': (_) => new QuizPage()
+            },
+          )
     );
   }
 
