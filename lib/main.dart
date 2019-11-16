@@ -7,6 +7,7 @@ import 'package:pic_word/quiz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:pic_word/models/login.dart';
+import 'package:pic_word/models/word.dart';
 
 void main() {
   runApp(new MyApp());
@@ -34,6 +35,9 @@ class MyAppState extends State<MyApp> {
           providers: [
             ChangeNotifierProvider<Login>(
               builder: (_) => Login(),
+            ),
+            ChangeNotifierProvider<Word>(
+              builder: (_) => Word(),
             ),
           ],
           child: new MaterialApp(

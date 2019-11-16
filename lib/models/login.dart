@@ -5,6 +5,7 @@ class Login extends ChangeNotifier {
   String _email;
   String _password;
   FirebaseUser _user;
+  String _word;
 
   void setEmail(String value) {
     this._email = value;
@@ -22,6 +23,12 @@ class Login extends ChangeNotifier {
 
   void setUser(FirebaseUser user) {
     this._user = user;
+  }
+
+  String get word => this._word;
+
+  void setWord(String value) {
+    this._word = value;
   }
 
   FirebaseUser get user => this._user;

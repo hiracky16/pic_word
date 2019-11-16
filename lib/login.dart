@@ -18,7 +18,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('build');
     return Scaffold(
         resizeToAvoidBottomPadding: false,
         appBar: new AppBar(
@@ -82,31 +81,33 @@ class _LoginPageState extends State<LoginPage> {
     return message;
   }
 
-  void signin(BuildContext context, String email, String password) async {
+  Future<FirebaseUser> signin(BuildContext context, String email, String password) async {
     FirebaseUser user;
     // form のバリデーションを実行
     _formKey.currentState.validate();
     try {
       user = await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
+      print('sign in');
+      Navigator.pushNamed(context, "/list");
+      return user;
     } catch (e) {
-      return;
+      return user;
     }
-    print('sign in');
-    Navigator.pushNamed(context, "/list");
   }
 
-  void signup(BuildContext context, String email, String password) async {
+  Future<FirebaseUser> signup(BuildContext context, String email, String password) async {
     FirebaseUser user;
     _formKey.currentState.validate();
     try {
       user = await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
+      print('sign up');
+      Navigator.pushNamed(context, "/list");
+      return user;
     } catch (e) {
-      return;
+      return user;
     }
-    print('sign up');
-    Navigator.pushNamed(context, "/list");
   }
 
   void showBasicDialog(BuildContext context, String message) {
@@ -178,7 +179,8 @@ class _Button extends StatelessWidget {
     return MaterialButton(
         key: null,
         onPressed: () {
-          onPress(context, login.email, login.password);
+          FirebaseUser user = onPress(context, login.email, login.password);
+          login.setUser(user);
         },
         color: color,
         shape: RoundedRectangleBorder(
